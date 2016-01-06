@@ -43,7 +43,11 @@ body {
     font-family: sans-serif;
 }
 
+#heading{
+    display: block;
+}
 h1{
     margin: 0 auto;
+    text-align: center;
     padding-bottom: 50px;
 }

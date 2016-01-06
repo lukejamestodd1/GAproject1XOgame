@@ -1,149 +1,156 @@
 console.log('XO');
 
-//JS array
-var boardArray = [0.0, 0.1, 0.2,
-						      0.3, 0.4, 0.5,
-						      0.6, 0.7, 0.8];
+	//JQ board object
+	var $board= $('.board');
 
-// //9 x independent JQ square objects - don't need
-// var $square0= $('.square.top.left');
-// var $square1= $('.square.top');
-// var $square2= $('.square.top.right');
-// var $square3= $('.square.left');
-// var $square4= $('.square.mid');
-// var $square5= $('.square.right');
-// var $square6= $('.square.bottom.left');
-// var $square7= $('.square.bottom');
-// var $square8= $('.square.bottom.right');
+	//JQ heading to show which player is up
+	var $playerDisp= $('playerDisp');
 
-//JQ board object
-var $board= $('.board');
+//wrap 2-player game into a function
+var xoGame = function(){
 
-//JQ heading to show player
-var $playerDisp= $('playerDisp');
+	//result of the game - player 1, 2, or draw (0)
+	var result;
 
-//player 1 or player 2
-var player = 1;
+	//JS array for game board
+	var boardArray = [0.0, 0.1, 0.2,
+							      0.3, 0.4, 0.5,
+							      0.6, 0.7, 0.8];
 
-var turns = 0;
+	//player 1 or player 2
+	var player = 1;
 
-//function to show who's turn it is
-var showWhosTurn = function(){
-	if (player === 1){
-		$(playerDisp).html("Player 1's turn");
-	}
-	else if (player === 2){
-		$(playerDisp).html("Player 2's turn");
-	}
-}
+	//number of turns
+	var turns = 0;
 
-//initial call when game starts
-showWhosTurn();
-
-//function to check whether game is over
-//pass current player in
-var isGameOver = function(){
-	
-	//if a row of three found
-	if (
-		((boardArray[0] === boardArray[1]) && (boardArray[0] === boardArray[2])) ||
-		((boardArray[0] === boardArray[3]) && (boardArray[0] === boardArray[6])) ||
-		((boardArray[0] === boardArray[4]) && (boardArray[0] === boardArray[8])) ||
-		((boardArray[1] === boardArray[4]) && (boardArray[1] === boardArray[7])) ||
-		((boardArray[2] === boardArray[4]) && (boardArray[2] === boardArray[6])) ||
-		((boardArray[2] === boardArray[5]) && (boardArray[2] === boardArray[8])) ||
-		((boardArray[6] === boardArray[7]) && (boardArray[6] === boardArray[8])) ||
-		((boardArray[3] === boardArray[4]) && (boardArray[3] === boardArray[5]))
-		){
-		console.log('Player ' + player + ' is the winner!');
-		$(playerDisp).html('Player  ' + player + ' is the winner!')
+	//function to show who's turn it is
+	var showWhosTurn = function(){
+		if (player === 1){
+			$(playerDisp).html("Player 1's turn");
+		}
+		else if (player === 2){
+			$(playerDisp).html("Player 2's turn");
+		}
 	}
 
-	//if no winner but board full
-	 else if (turns === 9){
-		console.log("It's a draw!");
-	}
-	else{
-		return false;
-	}
-	
+	//initial call when game starts
+	showWhosTurn();
 
-}
-
-//function to check whether box is already clicked
-var checkSquare = function(selectedSquare){
-	if (selectedSquare.html() === ''){
-		return false;
-	}
-	else{
-		return true;
-	}
-}
-
-//just select one specific square by using a second paramater for the function
-//board is parent, .square is child. can also do "event target' instead of 'this'
-$board.on('click', '.square',function(){
-
-		//increment no of turns
-		turns++;
-
-		//check the square isn't already taken
-		if (checkSquare($(this)) === false){
-
-				console.log('false');
-
-				if (player === 1){
-
-				//change the square to player's symbol
-				$(this).html('X');
-
-				//get ID number of square clicked
-				var i = $(this).attr('id');
-				var j = (i.length)-1;
-				var index = i.charAt(j);
-
-				//update boardArray index to playerno
-				boardArray[index] = player;
-
-				//check for game over - pass in player no
-				if (isGameOver() == false){
-					//change to other player's turn and show
-				player++;
-				showWhosTurn();
-				}
-
-				
-			}
-
-			else if(player === 2){
-				//change the board html
-				$(this).html('O');
-
-				//get ID number of square clicked
-				var i = $(this).attr('id');
-				var j = (i.length)-1;
-				var index = i.charAt(j);
-
-				//update boardArray index to playerno
-				boardArray[index] = player;
-
-				//check for game over
-				if (isGameOver() == false){
-					//change to other player and show
-				player--;
-				showWhosTurn();
-
-				}
-
-
-				
-			}	
+	//function to check whether game is over
+	var isGameOver = function(){
+		//if a row of three is found
+		if (
+			((boardArray[0] === boardArray[1]) && (boardArray[0] === boardArray[2])) ||
+			((boardArray[0] === boardArray[3]) && (boardArray[0] === boardArray[6])) ||
+			((boardArray[0] === boardArray[4]) && (boardArray[0] === boardArray[8])) ||
+			((boardArray[1] === boardArray[4]) && (boardArray[1] === boardArray[7])) ||
+			((boardArray[2] === boardArray[4]) && (boardArray[2] === boardArray[6])) ||
+			((boardArray[2] === boardArray[5]) && (boardArray[2] === boardArray[8])) ||
+			((boardArray[6] === boardArray[7]) && (boardArray[6] === boardArray[8])) ||
+			((boardArray[3] === boardArray[4]) && (boardArray[3] === boardArray[5]))
+			){
+			console.log('Player ' + player + ' is the winner!');
+			$(playerDisp).html('Player  ' + player + ' is the winner!');
+			result = player;
+			console.log(result);
+		}
+		//if no winner but board full
+		else if (turns === 9){
+			$(playerDisp).html('Draw!');
+			result = 0;
+			console.log(result);
 		}
 		else{
-			console.log('spot taken!');
+			return false;
 		}
-			
-});
+	}
+
+	//function to check whether box is already clicked
+	var checkSquare = function(selectedSquare){
+		if (selectedSquare.html() === ''){
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+
+	//just select one specific square by using a second paramater for the function
+	//board is parent, .square is child. can also do "event target' instead of 'this'
+	$board.on('click', '.square',function(){
+
+			//increment no of turns
+			turns++;
+
+			//check the square isn't already taken
+			if (checkSquare($(this)) === false){
+
+					if (player === 1){
+						//change the square to player's symbol
+						$(this).html('X');
+
+						//get ID number of square clicked
+						var i = $(this).attr('id');
+						var j = (i.length)-1;
+						var index = i.charAt(j);
+
+						//update boardArray index to playerno
+						boardArray[index] = player;
+
+						//check for game over
+						if (isGameOver() == false){
+							//change to other player's turn and show
+							player++;
+							showWhosTurn();
+						}
+						else{
+							
+							console.log(result);
+							return;
+						}
+					}
+					else if(player === 2){
+						//change the board html
+						$(this).html('O');
+
+						//get ID number of square clicked
+						var i = $(this).attr('id');
+						var j = (i.length)-1;
+						var index = i.charAt(j);
+
+						//update boardArray index to playerno
+						boardArray[index] = player;
+
+						//check for game over
+						if (isGameOver() == false){
+							//change to other player and show
+							player--;
+							showWhosTurn();
+						}
+						else{
+							console.log(result);
+							return;
+						}			
+					}	
+				}
+				else{
+				$(playerDisp).html('That spot is taken! Try again player ' + player);
+				}
+		}); console.log(result);	
+			return result;
+};
+
+var res = xoGame();
+
+if (res === 1){
+	$(playerDisp).html("XXXXXXX");
+}
+else if (res === 2){
+	$(playerDisp).html("OOOOOOO");
+}
+else if (res === 0) {
+	$(playerDisp).html("--------");
+}
 
 
 
@@ -155,3 +162,14 @@ $board.on('click', '.square',function(){
 // 		console.log('square clicked');
 // 		$squareTL.html('X');
 // });
+
+// //9 x independent JQ square objects - don't need
+// var $square0= $('.square.top.left');
+// var $square1= $('.square.top');
+// var $square2= $('.square.top.right');
+// var $square3= $('.square.left');
+// var $square4= $('.square.mid');
+// var $square5= $('.square.right');
+// var $square6= $('.square.bottom.left');
+// var $square7= $('.square.bottom');
+// var $square8= $('.square.bottom.right');
