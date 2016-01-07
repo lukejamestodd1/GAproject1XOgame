@@ -7,7 +7,7 @@ console.log('XO');
 	//JQ heading to show which player is up
 	var $playerDisp = $('playerDisp');
 
-	var timing = 1000;
+	var timing = 1500;
 
 //wrap 2-player game into a function
 var xoGame = function(){
@@ -53,7 +53,11 @@ var xoGame = function(){
 		updateScores();
 	}
 
-	var animateBoard = function(playerNo){
+	var $animateBoard = function(playerNo){
+		if (result === 0){
+			$('.square').html('!!');
+		}
+		else{
 		//9 x independent JQ square objects stored in array
 		var $squareNo= [
 		$('.square.top.left'),
@@ -74,9 +78,10 @@ var xoGame = function(){
 			}
 			else{
 				$squareNo[i].html('!');
-				$squareNo[i].css('color', 'red');
+				$squareNo[i].css('color', 'grey');
 			}
 		}
+	}
 	}
 	
 	setTimeout(newGame, timing);
@@ -99,7 +104,7 @@ var xoGame = function(){
 			$(playerDisp).html('Player  ' + player + ' is the winner!');
 			result = player;
 			console.log(result);
-			animateBoard(player);
+			$animateBoard(player);
 			scoresArray[player]++;
 			setTimeout(newGame, timing);
 		}
@@ -107,6 +112,7 @@ var xoGame = function(){
 		else if (turns === 9){
 			$(playerDisp).html('Draw!');
 			result = 0;
+			$animateBoard(player);
 			scoresArray[0]++;
 			setTimeout(newGame, timing);
 		}
@@ -197,8 +203,19 @@ xoGame();
 // 		$squareTL.html('X');
 // });
 
+// NORMAL ARRAY
+// 0  1  2
+// 3  4  5
+// 6  7  8
 
-
+// 			SQUARED SUMS			POSITIONS
+// 			        56				6+4+2 = 56 
+// 0	 1	4	  --5  				0+1+2 = 5
+// 9	16	25	--50				3+4+5 = 50
+// 36	49	64	--149				6+7+8 = 149
+// |	|		|			80				0+3+6 = 45
+// 45	66	93	  					1+4+7 = 66
+//												0+4+8 = 80
 
 
 
