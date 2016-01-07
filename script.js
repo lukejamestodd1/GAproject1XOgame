@@ -1,13 +1,13 @@
 console.log('XO');
 
-	//JQ board object
-	var $board = $('.board');
-	var $square = $('.square');
+//JQ board object
+var $board = $('.board');
+var $square = $('.square');
 
-	//JQ heading to show which player is up
-	var $playerDisp = $('playerDisp');
+//JQ heading to show which player is up
+var $playerDisp = $('playerDisp');
 
-	var timing = 1500;
+var timing = 1500;
 
 //wrap 2-player game into a function
 var xoGame = function(){
@@ -70,17 +70,87 @@ var xoGame = function(){
 		$('.square.bottom'),
 		$('.square.bottom.right')];
 
-		//loop through game board and change
-		for (var i = 0; i < boardArray.length; i++){
-			if (boardArray[i] === playerNo){
-				//change text colour
-				$squareNo[i].css('color', 'red');
-			}
-			else{
-				$squareNo[i].html('!');
-				$squareNo[i].css('color', 'grey');
+		//answerArray - values = base array positions squared 
+		var answerArray = [ 0, 1,  4,
+											  9, 16, 25,
+											 36, 49, 64];
+		//sums array - successful combinations
+		sumsArray = [56, 5, 50, 149, 45, 66, 80, 93];
+
+		//create testArray
+		testArray = [];
+		for (var y = 0; y < boardArray.length; y++){
+			if (boardArray[y] === player){
+				testArray[y] = answerArray[y];
 			}
 		}
+		console.log('boardArray' +boardArray);
+		console.log('answerArray' +answerArray);
+		console.log('testArray' +testArray);
+		
+		//iterate trhough answers array looking for c
+		for (var z = 0; z < sumsArray.length; z++){
+			if (
+			testArray[0]+testArray[1]+testArray[2] === sumsArray[z] ||
+			testArray[3]+testArray[4]+testArray[5] === sumsArray[z] ||
+			testArray[6]+testArray[7]+testArray[8] === sumsArray[z] ||
+			testArray[0]+testArray[3]+testArray[6] === sumsArray[z] ||
+			testArray[1]+testArray[4]+testArray[7] === sumsArray[z] ||
+			testArray[2]+testArray[5]+testArray[8] === sumsArray[z] ||
+			testArray[0]+testArray[4]+testArray[8] === sumsArray[z] ||
+			testArray[6]+testArray[4]+testArray[2] === sumsArray[z]
+			){
+				console.log('sumsArray z ' + sumsArray[z]);
+
+				var colourChange = function (number){
+					$squareNo[number].css('color', 'red');
+				}
+
+				var key = sumsArray[z];
+				var a, b, c;
+
+				if (key === 5){ 
+					a = 0; b = 1; c = 2;
+				}
+				else if (key === 56){ 
+					a = 2; b = 2; c = 6;
+				}
+				else if (key === 50){ 
+					a = 3; b = 4; c = 5;
+				}
+				else if (key === 149){ 
+					a = 6; b = 7; c = 8;
+				}
+				else if (key === 80){ 
+					a = 4; b = 0; c = 8;
+				}
+				else if (key === 93){ 
+					a = 2; b = 5; c = 8;
+				}
+				else if (key === 66){ 
+					a = 1; b = 4; c = 7;
+				}
+				else if (key === 45){ 
+					a = 0; b = 3; c = 6;
+				}
+				
+			colourChange(a);
+			colourChange(b);
+			colourChange(c);
+			}
+			
+		}	
+		//loop through game board and change
+		// for (var i = 0; i < boardArray.length; i++){
+		// 	if (boardArray[i] === playerNo){
+		// 		//change text colour
+		// 		$squareNo[i].css('color', 'red');
+		// 	}
+		// 	else{
+		// 		$squareNo[i].html('!');
+		// 		$squareNo[i].css('color', 'grey');
+		// 	}
+		// }
 	}
 	}
 	
@@ -88,18 +158,16 @@ var xoGame = function(){
 
 	//function to check whether game is over
 	var isGameOver = function(){
-		//if a row of three is found
-		if (
-			((boardArray[0] === boardArray[1]) && (boardArray[0] === boardArray[2])) ||
-			((boardArray[0] === boardArray[3]) && (boardArray[0] === boardArray[6])) ||
-			((boardArray[0] === boardArray[4]) && (boardArray[0] === boardArray[8])) ||
-			((boardArray[1] === boardArray[4]) && (boardArray[1] === boardArray[7])) ||
-			((boardArray[2] === boardArray[4]) && (boardArray[2] === boardArray[6])) ||
-			((boardArray[2] === boardArray[5]) && (boardArray[2] === boardArray[8])) ||
-			((boardArray[6] === boardArray[7]) && (boardArray[6] === boardArray[8])) ||
-			((boardArray[3] === boardArray[4]) && (boardArray[3] === boardArray[5]))
-			){
-
+		if(
+		((boardArray[0] === boardArray[1]) && (boardArray[0] === boardArray[2])) ||
+		((boardArray[0] === boardArray[3]) && (boardArray[0] === boardArray[6])) ||
+		((boardArray[0] === boardArray[4]) && (boardArray[0] === boardArray[8])) ||
+		((boardArray[1] === boardArray[4]) && (boardArray[1] === boardArray[7])) ||
+		((boardArray[2] === boardArray[4]) && (boardArray[2] === boardArray[6])) ||
+		((boardArray[2] === boardArray[5]) && (boardArray[2] === boardArray[8])) ||
+		((boardArray[6] === boardArray[7]) && (boardArray[6] === boardArray[8])) ||
+		((boardArray[3] === boardArray[4]) && (boardArray[3] === boardArray[5]))
+		){
 			console.log('Player ' + player + ' is the winner!');
 			$(playerDisp).html('Player  ' + player + ' is the winner!');
 			result = player;
@@ -110,16 +178,19 @@ var xoGame = function(){
 		}
 		//if no winner but board full
 		else if (turns === 9){
-			$(playerDisp).html('Draw!');
-			result = 0;
-			$animateBoard(player);
-			scoresArray[0]++;
-			setTimeout(newGame, timing);
+		$(playerDisp).html('Draw!');
+		result = 0;
+		$animateBoard(player);
+		scoresArray[0]++;
+		setTimeout(newGame, timing);
 		}
 		else{
 			return false;
 		}
+
 	}
+		
+	
 
 	//function to check whether box is already clicked
 	var checkSquare = function(selectedSquare){
@@ -217,6 +288,7 @@ xoGame();
 // 45	66	93	  					1+4+7 = 66
 //												0+4+8 = 80
 
+/* if - SIMPLE COMPARISON
 
 
 
@@ -224,4 +296,4 @@ xoGame();
 
 
 
-
+*/
