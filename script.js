@@ -58,17 +58,7 @@ var xoGame = function(){
 			$('.square').html('!!');
 		}
 		else{
-		//9 x independent JQ square objects stored in array
-		var $squareNo= [
-		$('.square.top.left'),
-		$('.square.top'), 
-		$('.square.top.right'),
-		$('.square.left'),
-		$('.square.mid'),
-		$('.square.right'),
-		$('.square.bottom.left'),
-		$('.square.bottom'),
-		$('.square.bottom.right')];
+		
 
 		//answerArray - values = base array positions squared 
 		var answerArray = [ 0, 1,  4,
@@ -102,10 +92,6 @@ var xoGame = function(){
 			){
 				console.log('sumsArray z ' + sumsArray[z]);
 
-				var colourChange = function (number){
-					$squareNo[number].css('color', 'red');
-				}
-
 				var key = sumsArray[z];
 				var a, b, c;
 
@@ -113,7 +99,7 @@ var xoGame = function(){
 					a = 0; b = 1; c = 2;
 				}
 				else if (key === 56){ 
-					a = 2; b = 2; c = 6;
+					a = 2; b = 4; c = 6;
 				}
 				else if (key === 50){ 
 					a = 3; b = 4; c = 5;
@@ -133,24 +119,28 @@ var xoGame = function(){
 				else if (key === 45){ 
 					a = 0; b = 3; c = 6;
 				}
-				
-			colourChange(a);
-			colourChange(b);
-			colourChange(c);
+
+				//9 x independent JQ square objects stored in array
+		var $squareNo= [
+		$('.square.top.left'),
+		$('.square.top'), 
+		$('.square.top.right'),
+		$('.square.left'),
+		$('.square.mid'),
+		$('.square.right'),
+		$('.square.bottom.left'),
+		$('.square.bottom'),
+		$('.square.bottom.right')];
+			
+		var $colourChange = function (number){
+				$squareNo[number].css('color', 'red');
+		}
+			$colourChange(a);
+			$colourChange(b);
+			$colourChange(c);
 			}
 			
 		}	
-		//loop through game board and change
-		// for (var i = 0; i < boardArray.length; i++){
-		// 	if (boardArray[i] === playerNo){
-		// 		//change text colour
-		// 		$squareNo[i].css('color', 'red');
-		// 	}
-		// 	else{
-		// 		$squareNo[i].html('!');
-		// 		$squareNo[i].css('color', 'grey');
-		// 	}
-		// }
 	}
 	}
 	
@@ -190,8 +180,6 @@ var xoGame = function(){
 
 	}
 		
-	
-
 	//function to check whether box is already clicked
 	var checkSquare = function(selectedSquare){
 		if (selectedSquare.html() === ''){
@@ -263,7 +251,49 @@ var xoGame = function(){
 
 xoGame();
 
+// -------------- DYNAMICALLY DRAW BOARD
+			
+			//how to do this via jquery element??
+			var $newBoard = $('.newBoard');
 
+			for (var size = 0; size < 9; size++){
+				var newSquare = document.createElement('div');
+				newSquare.className = 'square';
+				newSquare.id = 'square-' + size;
+				newSquare.innerHTML = "!!!";
+				newBoard.appendChild(newSquare);
+			}
+			
+		
+
+			
+
+// 				app.addItem(content);
+				
+// 				//updating the DOM
+// 				// var listItem = document.createElement('li');
+// 				var listItem = $('<li>').html(content);
+
+// 				// listItem.appendChild(document.createTextNode(content));
+
+// 				app.elems.tasks.append(listItem);
+
+// 			});
+
+// setUp = function(content){
+// 			app.tasks.push(content);
+// 			localStorage.setItem('tasks', JSON.stringify(app.tasks));
+// 		},
+
+// 	renderTasks: function(){
+
+// 			//discarding old JS function and using underscore instead. old "rendertasks" function is below"
+// 			// _.each(app.tasks, function(elem, index, list){ ---format for the each _funtion
+// 				_.each(app.tasks, function(task){
+// 					var listItem = $('<li>').html(task);
+// 					app.elems.tasks.append(listItem);
+
+// 			})
 
 // event listener/handler for clicking on squares. 1 before click means "1 click"
 // so function isn't called again for more clicks
