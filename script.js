@@ -1,27 +1,33 @@
 console.log('XO');
 
 	//JQ board object
-	var $board= $('.board');
+	var $board = $('.board');
+	var $square = $('.square');
 
 	//JQ heading to show which player is up
-	var $playerDisp= $('playerDisp');
+	var $playerDisp = $('playerDisp');
+
+	var timing = 1000;
 
 //wrap 2-player game into a function
 var xoGame = function(){
 
 	//result of the game - player 1, 2, or draw (0)
-	var result;
-
 	//JS array for game board
-	var boardArray = [0.0, 0.1, 0.2,
-							      0.3, 0.4, 0.5,
-							      0.6, 0.7, 0.8];
-
 	//player 1 or player 2
-	var player = 1;
-
-	//number of turns
+	//number of turns - game ends after 9
+	//scores kept in array. (pos0: draws, pos1: player1, pos2: player2)
+	var result;
+	var boardArray = [];
+	var player;
 	var turns = 0;
+	scoresArray = [0, 0, 0];
+
+	var updateScores = function(){
+		$('#player1Score').html(scoresArray[1]);
+		$('#player2Score').html(scoresArray[2]);
+		$('#drawScore').html(scoresArray[0]);
+	}
 
 	//function to show who's turn it is
 	var showWhosTurn = function(){
@@ -33,8 +39,47 @@ var xoGame = function(){
 		}
 	}
 
-	//initial call when game starts
-	showWhosTurn();
+	//reset function for new game
+	var newGame = function(){
+		boardArray = [0.0, 0.1, 0.2,
+								  0.3, 0.4, 0.5,
+								  0.6, 0.7, 0.8];
+		player = 1;
+		turns = 0;
+		showWhosTurn();
+		result = -1;
+		$('.square').css('color', 'white');
+		$('.square').html('');
+		updateScores();
+	}
+
+	var animateBoard = function(playerNo){
+		//9 x independent JQ square objects stored in array
+		var $squareNo= [
+		$('.square.top.left'),
+		$('.square.top'), 
+		$('.square.top.right'),
+		$('.square.left'),
+		$('.square.mid'),
+		$('.square.right'),
+		$('.square.bottom.left'),
+		$('.square.bottom'),
+		$('.square.bottom.right')];
+
+		//loop through game board and change
+		for (var i = 0; i < boardArray.length; i++){
+			if (boardArray[i] === playerNo){
+				//change text colour
+				$squareNo[i].css('color', 'red');
+			}
+			else{
+				$squareNo[i].html('!');
+				$squareNo[i].css('color', 'red');
+			}
+		}
+	}
+	
+	setTimeout(newGame, timing);
 
 	//function to check whether game is over
 	var isGameOver = function(){
@@ -49,16 +94,21 @@ var xoGame = function(){
 			((boardArray[6] === boardArray[7]) && (boardArray[6] === boardArray[8])) ||
 			((boardArray[3] === boardArray[4]) && (boardArray[3] === boardArray[5]))
 			){
+
 			console.log('Player ' + player + ' is the winner!');
 			$(playerDisp).html('Player  ' + player + ' is the winner!');
 			result = player;
 			console.log(result);
+			animateBoard(player);
+			scoresArray[player]++;
+			setTimeout(newGame, timing);
 		}
 		//if no winner but board full
 		else if (turns === 9){
 			$(playerDisp).html('Draw!');
 			result = 0;
-			console.log(result);
+			scoresArray[0]++;
+			setTimeout(newGame, timing);
 		}
 		else{
 			return false;
@@ -71,6 +121,7 @@ var xoGame = function(){
 			return false;
 		}
 		else{
+			$(playerDisp).html('That spot is taken! Try again player ' + player);
 			return true;
 		}
 	}
@@ -79,11 +130,11 @@ var xoGame = function(){
 	//board is parent, .square is child. can also do "event target' instead of 'this'
 	$board.on('click', '.square',function(){
 
-			//increment no of turns
-			turns++;
-
 			//check the square isn't already taken
 			if (checkSquare($(this)) === false){
+
+				//increment no of turns
+				turns++;
 
 					if (player === 1){
 						//change the square to player's symbol
@@ -104,9 +155,7 @@ var xoGame = function(){
 							showWhosTurn();
 						}
 						else{
-							
 							console.log(result);
-							return;
 						}
 					}
 					else if(player === 2){
@@ -129,28 +178,13 @@ var xoGame = function(){
 						}
 						else{
 							console.log(result);
-							return;
 						}			
 					}	
 				}
-				else{
-				$(playerDisp).html('That spot is taken! Try again player ' + player);
-				}
-		}); console.log(result);	
-			return result;
+		});
 };
 
-var res = xoGame();
-
-if (res === 1){
-	$(playerDisp).html("XXXXXXX");
-}
-else if (res === 2){
-	$(playerDisp).html("OOOOOOO");
-}
-else if (res === 0) {
-	$(playerDisp).html("--------");
-}
+xoGame();
 
 
 
@@ -163,13 +197,14 @@ else if (res === 0) {
 // 		$squareTL.html('X');
 // });
 
-// //9 x independent JQ square objects - don't need
-// var $square0= $('.square.top.left');
-// var $square1= $('.square.top');
-// var $square2= $('.square.top.right');
-// var $square3= $('.square.left');
-// var $square4= $('.square.mid');
-// var $square5= $('.square.right');
-// var $square6= $('.square.bottom.left');
-// var $square7= $('.square.bottom');
-// var $square8= $('.square.bottom.right');
+
+
+
+
+
+
+
+
+
+
+
