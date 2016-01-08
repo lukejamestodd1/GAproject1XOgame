@@ -60,9 +60,12 @@ h1{
 }
 #newBoard{
     color: black;
-    background-color: yellow;
+    background-color:  #6495ED;
 }
+.new{
+border-style: solid;
 
+}
 
 
 

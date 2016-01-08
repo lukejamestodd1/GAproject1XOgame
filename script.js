@@ -8,6 +8,8 @@ var $square = $('.square');
 var $playerDisp = $('playerDisp');
 
 var timing = 1500;
+var player;
+var boardArray = [];
 
 //wrap 2-player game into a function
 var xoGame = function(){
@@ -18,8 +20,8 @@ var xoGame = function(){
 	//number of turns - game ends after 9
 	//scores kept in array. (pos0: draws, pos1: player1, pos2: player2)
 	var result;
-	var boardArray = [];
-	var player;
+	
+	
 	var turns = 0;
 	scoresArray = [0, 0, 0];
 
@@ -135,10 +137,10 @@ var xoGame = function(){
 		var $colourChange = function (number){
 				$squareNo[number].css('color', 'red');
 		}
-			$colourChange(a);
-			$colourChange(b);
-			$colourChange(c);
-			}
+		$colourChange(a);
+		$colourChange(b);
+		$colourChange(c);
+		}
 			
 		}	
 	}
@@ -251,22 +253,76 @@ var xoGame = function(){
 
 xoGame();
 
-// -------------- DYNAMICALLY DRAW BOARD
+// -------------- DYNAMICALLY DRAW BOARD, PLAY AGAINST COMPUTER
 			
-			//how to do this via jquery element??
-			var $newBoard = $('.newBoard');
-
+			var $newBoard = $('#newBoard');
+			var newSquaresA = [];
+			//make board via 'document create element'
+			//how to do this via jquery??
 			for (var size = 0; size < 9; size++){
 				var newSquare = document.createElement('div');
-				newSquare.className = 'square';
+				newSquare.className = 'square new';
 				newSquare.id = 'square-' + size;
 				newSquare.innerHTML = "!!!";
 				newBoard.appendChild(newSquare);
+				newSquaresA.push(newSquare);
 			}
-			
-		
 
-			
+	var aiMove = function(){
+
+		//WHY IS options CHANGING THE boardArray VARIABLE??
+		// var options = [];
+		// options  = boardArray;
+		// for (var k = 0; k < options.length; k++){
+		// 	if(options[k] === 1){
+		// 		options.splice(k, 1);
+		// 	}
+		// 	else if(options[k] === 2 ){
+		// 		options.splice(k, 1);
+		// 	}
+		// }
+		// console.log(boardArray);
+		// console.log(options);
+
+		//make array of available move options from game board
+		var options = [];
+		for (var k = 0; k < boardArray.length; k++){
+			if(boardArray[k] != 1 && boardArray[k] != 0){
+				options.push(boardArray[k]);
+			}
+		}
+		console.log(boardArray);
+		console.log(options);
+		//randomly choose a spot, update boardArray and change html
+		var optionIndex = Math.floor((Math.random() * options.length));
+		var moveIndex = options[optionIndex];
+		var move = moveIndex * 10;
+		boardArray[move] = player;
+		//find id of box and update with O
+		var compMove = function(){
+			newSquaresA[move].innerHTML = 'O';
+		}
+		setTimeout(compMove, timing/3);
+		//$(this).html('O');
+		player--;
+	}
+
+$newBoard.on('click', '.new', function(){
+		console.log('1 PLAYER GAME');
+		console.log(boardArray);
+		aiMove();
+});
+
+
+game2player = function(){
+	newGame();
+
+}
+
+game1player = function(){
+	newGame();
+}
+
 
 // 				app.addItem(content);
 				
